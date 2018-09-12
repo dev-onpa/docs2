@@ -1,7 +1,6 @@
-# Get Started
+# Docker 시작하기
 
 ## Part 1 : 설정 
-
 
 ### Docker 컨셉 
 Docker는 개발자나 시스템 관리자가 컨테이너(`Container`)를 사용하여 애플리케이션을 개발, 배포, 실행할 수 있는 플랫폼이다. Linux 컨테이너를 사용하여 애플리케이션을 배포한다.
@@ -20,7 +19,6 @@ Docker는 개발자나 시스템 관리자가 컨테이너(`Container`)를 사�
 
 컨테이너는 이미지를 실행하여 구동된다. 
 이미지는 애플리케이션을 실행하기 위해 필요한 모든 것을 포함하는 실행가능한 패키지이다. (code, runtime, library, evironment variables, and configuration files)
-
 컨테이너는 이미지의 런타임 인스턴스이고 실행될 때 메모리에 상주하게 된다.
 리눅스에서 처럼 `docker ps` 명령어로 실행중인 컨테이너를 확인할 수 있다.
 
