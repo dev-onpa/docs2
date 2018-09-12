@@ -20,7 +20,33 @@ Docker는 개발자나 시스템 관리자가 컨테이너(`Container`)를 사�
 
 ##### 이미지와 컨테이너 (Image and containers)
 
-컨테이너는 이미지를 실행하여 구동된다. 
-이미지는 애플리케이션을 실행하기 위해 필요한 모든 것을 포함하는 실행가능한 패키지이다. (code, runtime, library, evironment variables, and configuration files)
+    컨테이너는 이미지를 실행하여 구동된다. 
+    이미지는 애플리케이션을 실행하기 위해 필요한 모든 것을 포함하는 실행가능한 패키지이다. (code, runtime, library, evironment variables, and configuration files)
+
+    컨테이너는 이미지의 런타임 인스턴스이고 실행될 때 메모리에 상주하게 된다.
+    리눅스에서 처럼 `docker ps` 명령어로 실행중인 컨테이너를 확인할 수 있다.
+
+
+##### 컨테이너와 가상머신 (Container and virtual machines)
+
+
+#### Docker 환경 구성
+우선 Docker를 설치하자
+
+>  
+> 쿠버네티스 (Kubernetes)와 완전한 통합을 위해서는  
+>  
+> + Kubernetes on Docker for Mac is available in 17.12 Edge (mac45) or 17.12 Stable (mac46) and higher.
+> + Kubernetes on Docker for Windows is available in 18.02 Edge (win50) and higher edge channels only.
+
+
+> [`Docker 설치하기`](https://docs.docker.com/install/)  
+  
+##### Docker 버전 확인
+1. `docker --version`을 실행하고 지원되는 버전인지 확인하자
+
+```
+    docker --version
+```
 
 
