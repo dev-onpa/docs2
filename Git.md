@@ -4,6 +4,15 @@
 
 ## 시작하기
 
+develop 브랜치만 클론 하기
+  git clone -b develop http://sadfasd/test.git
+
+
+git commit 취속 
+ https://gmlwjd9405.github.io/2018/05/25/git-add-cancle.html
+
+
+
 ### Git Download
 git을 다운로드 한다. [다운로드](http://www.naver.com)
 
