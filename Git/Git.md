@@ -52,3 +52,19 @@ $ git clone http://www.asdfasf.com/asdf.git
 
 
 [![](btn_login_kakao.png)](http://naver.com)
+
+
+# 특정 커밋으로 체크아웃 
+- git log, git reflog 조회 시 해시 값 6자리로 checkout
+```
+$ git checkout e4f2fd
+```
+
+
+# 특정 파일만 merge 하기  
+- develop 브랜치에 feature-01 에 있는 /aaa/bb/cc/test.jsp 파일만 머지 하기 
+```
+$ git checkout develop
+
+$ git checkout feature-01 -- /aaa/bb/cc/test.jsp
+```

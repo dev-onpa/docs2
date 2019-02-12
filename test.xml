@@ -1,0 +1,18 @@
+<VirtualHost *:80>
+        ServerName jestina.co.kr
+        ServerAdmin edger@jestina.com
+
+        <Directory /home/jestina/mall>
+                AllowOverride AuthConfig
+                Require all granted
+        </Directory>
+
+        # JkMount
+        Include conf/tomcat2.properties
+
+        RewriteEngine On
+        RewriteCond %{HTTPS} !=on
+        RewriteCond %{REQUEST_URI}  !(upload/UpData2/ep/)
+        RewriteRule ^(.*)$  https://www.jestina.co.kr$1 [R,L]
+
+</VirtualHost>
