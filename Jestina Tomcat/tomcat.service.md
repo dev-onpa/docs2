@@ -37,7 +37,7 @@ WantedBy=multi-user.target
 ```
 
 
-## 서비스 등록 
+## systemctl 데몬 리로드 (서비스 등록) 
 ```
 $ systemctl daemon-reload
 ```
@@ -54,7 +54,7 @@ $ service tomcat restart
 
 ## 부팅 시 자동시작 
 ```
-$ systemctl enable tomcat
+$ systemctl enable tomcat.service
 ```
 
 ## 상태보기 
