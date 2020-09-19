@@ -85,5 +85,5 @@ $ sestatus
 $ semanage port -l|grep http_port_t
 
 - 포트 추가 
-$ semanage port -a -t http_port_t -p tcp 8007
+$ semanage port -a -t http_port_t -p tcp 8049
 ```

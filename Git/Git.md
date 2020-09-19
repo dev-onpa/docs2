@@ -65,7 +65,7 @@ $ git merge --abrort
 $ git reset [--hard|--soft|--mixed] [커밋 버전]
 
 $ git reset --hard ef3da3
-```
+````
 
 
 ### 원격 저장소에 올라간 커밋 되돌리기

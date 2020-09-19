@@ -23,7 +23,7 @@ unicon port 를 8000 번으로 했으나 오류 발생.
 SELinux context 는 http_port_t 이므로 허용 가능한 port 를 확인
 https://www.lesstif.com/pages/viewpage.action?pageId=12943812
 
-semanage port -l |grep http_port_t
+semanage port -l | grep http_port_t
 
 # semanage port -a -p tcp -t http_port_t 8000 
 추가했으나 이미 등록된 port라고 나옴..
@@ -88,3 +88,27 @@ nginx['enable'] = false
 JENKINS 용 git 계정
 
 jenkins / vkdnjtmakstw
+
+
+
+
+
+
+{"severity":"WARN","time":"2020-07-30T08:25:52.486Z","error_class":"Redis::CannotConnectError","error_message":"Error connecting to Redis on /var/opt/gitlab/redis/redis.socket (Errno::ENOENT)","error_backtrace":["lib/gitlab/instrumentation/redis.rb:10:in `call'"],"retry":0}
+{"severity":"ERROR","time":"2020-07-30T08:25:52.468Z","message":"Error fetching job: Error connecting to Redis on /var/opt/gitlab/redis/redis.socket (Errno::ENOENT)"}
+{"severity":"WARN","time":"2020-07-30T08:25:52.487Z","error_class":"Redis::CannotConnectError","error_message":"Error connecting to Redis on /var/opt/gitlab/redis/redis.socket (Errno::ENOENT)","error_backtrace":["lib/gitlab/instrumentation/redis.rb:10:in `call'"],"retry":0}
+{"severity":"ERROR","time":"2020-07-30T08:25:52.469Z","message":"Error fetching job: Error connecting to Redis on /var/opt/gitlab/redis/redis.socket (Errno::ENOENT)"}
+{"severity":"WARN","time":"2020-07-30T08:25:52.488Z","error_class":"Redis::CannotConnectError","error_message":"Error connecting to Redis on /var/opt/gitlab/redis/redis.socket (Errno::ENOENT)","error_backtrace":["lib/gitlab/instrumentation/redis.rb:10:in `call'"],"retry":0}
+{"severity":"ERROR","time":"2020-07-30T08:25:52.469Z","message":"Error fetching job: Error connecting to Redis on /var/opt/gitlab/redis/redis.socket (Errno::ENOENT)"}
+{"severity":"WARN","time":"2020-07-30T08:25:52.489Z","error_class":"Redis::CannotConnectError","error_message":"Error connecting to Redis on /var/opt/gitlab/redis/redis.socket (Errno::ENOENT)","error_backtrace":["lib/gitlab/instrumentation/redis.rb:10:in `call'"],"retry":0}
+{"severity":"ERROR","time":"2020-07-30T08:25:52.461Z","message":"Error fetching job: Error connecting to Redis on /var/opt/gitlab/redis/redis.socket (Errno::ENOENT)"}
+{"severity":"WARN","time":"2020-07-30T08:25:52.489Z","error_class":"Redis::CannotConnectError","error_message":"Error connecting to Redis on /var/opt/gitlab/redis/redis.socket (Errno::ENOENT)","error_backtrace":["lib/gitlab/instrumentation/redis.rb:10:in `call'"],"retry":0}
+{"severity":"ERROR","time":"2020-07-30T08:25:52.470Z","message":"Error fetching job: Error connecting to Redis on /var/opt/gitlab/redis/redis.socket (Errno::ENOENT)"}
+{"severity":"WARN","time":"2020-07-30T08:25:52.490Z","error_class":"Redis::CannotConnectError","error_message":"Error connecting to Redis on /var/opt/gitlab/redis/redis.socket (Errno::ENOENT)","error_backtrace":["lib/gitlab/instrumentation/redis.rb:10:in `call'"],"retry":0}
+{"severity":"ERROR","time":"2020-07-30T08:25:52.470Z","message":"Error fetching job: Error connecting to Redis on /var/opt/gitlab/redis/redis.socket (Errno::ENOENT)"}
+{"severity":"ERROR","time":"2020-07-30T08:25:52.471Z","message":"Error fetching job: Error connecting to Redis on /var/opt/gitlab/redis/redis.socket (Errno::ENOENT)"}
+
+
+
+
+gitlab

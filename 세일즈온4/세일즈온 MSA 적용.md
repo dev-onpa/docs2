@@ -286,6 +286,18 @@ eureka:
 
 
 
+## @FeignClient를 이용하여 다른 서비스 API 호출하기 
+- OrderService 에서 ItemService 호출 하기 
+- @FeignClient 로 호출 시 401 오류. access_token을 어떻게 설정할까? 
+```
+FeignClientInterceptor 를 생성하고 security에서 token 정보를 가져와 requestTemplate header 값으로 설정함. 
+```
+- 파라미터 설정은? @SpringQueryMap Object params
+- @SpringQueryMap 사용하여 전송시 배열값 전송 방법은??
+
+
+
+
 
 ## spring cloud kubernetes
 - docker contaier 실행 후 eureka 서버에서 container id를 hostname으로 등록하는 이슈가 있음.

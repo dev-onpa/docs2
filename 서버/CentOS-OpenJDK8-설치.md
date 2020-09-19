@@ -55,3 +55,89 @@ ssh를 재접속 해도 되지만 아래 방법이 더 편하다.
 ```
 source /etc/profile
 ```
+
+## JAVA 버전 관리하기 
+> 2019.10.14.
+
+alternatives 명령어는 심볼릭 링크를 관리할 수 있는 툴입니다. 이를 이용해서 설치된 자바 버전 중 필요한 자바 버전을 선택해 심볼릭 링크를 설정해줄 수 있습니다.
+
+```
+$ alternatives
+alternatives version 1.7.4 - Copyright (C) 2001 Red Hat, Inc.
+This may be freely redistributed under the terms of the GNU Public License.
+
+usage: alternatives --install <link> <name> <path> <priority>
+                    [--initscript <service>]
+                    [--family <family>]
+                    [--slave <link> <name> <path>]*
+       alternatives --remove <name> <path>
+       alternatives --auto <name>
+       alternatives --config <name>
+       alternatives --display <name>
+       alternatives --set <name> <path>
+       alternatives --list
+
+common options: --verbose --test --help --usage --version --keep-missing
+                --altdir <directory> --admindir <directory>
+```
+
+### 심볼릭 링크 생성하기
+```
+$ alternatives --install /usr/bin/java java /usr/local/java/jdk1.8.0_171/bin/java 1
+$ alternatives --install /usr/bin/java javac /usr/local/java/jdk1.8.0_171/bin/javac 1
+$ alternatives --install /usr/bin/java javaws /usr/local/java/jdk1.8.0_171/bin/javaws 1
+
+$ alternatives --set java /usr/local/java/jdk1.8.0_171/bin/java
+$ alternatives --set javac /usr/local/java/jdk1.8.0_171/bin/javac
+$ alternatives --set javaws /usr/local/java/jdk1.8.0_171/bin/javaws
+```
+
+### 심볼릭 링크 설정하기
+```
+$ alternatives --config java
+```
+위 명령어를 입력하면 java 로 정의된 심볼릭 링크들을 볼 수 있는데 제가 몇 번 삽질해서 잘못 등록한 자바 버전들을 볼 수 있습니다. 여기서 특정 버전을 골라서 선택할 수 있습니다.
+```
+$ alternatives --config java
+
+There are 4 programs which provide 'java'.
+
+  Selection    Command
+-----------------------------------------------
+ + 1           /usr/local/java/jdk1.8.0_171/bin/java
+   2           /usr/local/java/jdk1.8.0_112/bin/java
+*  3           /bin/java
+   4           /usr/local/java/jdk1.8.0_171//bin/java
+
+Enter to keep the current selection[+], or type selection number:
+```
+
+### 심볼릭 링크 삭제
+잘못 등록한 심볼릭 링크를 삭제해보겠습니다.
+
+```
+$ alternatives --remove java /usr/local/java/jdk1.8.0_171//bin/java
+```
+
+### 심볼릭 링크 리스트 조회
+--list 옵션으로 잘 정의되었는지 확인해보겠습니다.
+```
+$ alternatives --list
+java    manual  /usr/local/java/jdk1.8.0_171/bin/java
+javac   manual  /usr/local/java/jdk1.8.0_171/bin/javac
+javaws  manual  /usr/local/java/jdk1.8.0_171/bin/javaws
+```
+### 설치 확인하기
+```
+$ java -version
+
+java version "1.8.0_171"
+Java(TM) SE Runtime Environment (build 1.8.0_171-b11)
+Java HotSpot(TM) Client VM (build 25.171-b11, mixed mode)
+```
+
+
+
+
+
+

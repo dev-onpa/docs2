@@ -107,9 +107,9 @@ $ yum remove java-1.7.0-openjdk
 1. 엔진선택 : mysql (RDS 프리 티어에 적용되는 옵션만 사용에 체크 )
 2. DB 세부 정보 지정 
     - 스토리지 자동 조정 : 체크해제
-    - DB 인스턴스 식별자 : emoldino-mysql
-    - 마스터 사용자 이름 : emoldino
-    - 마스터 암호 : rnfhpowers^&^%
+    - DB 인스턴스 식별자 : mms-schaeffler
+    - 마스터 사용자 이름 : mms
+    - 마스터 암호 : emoldino^&^%
     - 나머진 기본값 설정.
 3. 고급 설정 구성
     - 퍼블릭 엑세스 가능성 : 예 (외부접속을 위해 필요)
@@ -190,7 +190,7 @@ https://console.aws.amazon.com/billing/home?#/
 - 도메인 연결 : Route53 ??
 - https 인증서 : 오하이오 무료 인증서 발급 가능 (서울도 가능?)
 
-
+ssh ec2-user@13.229.43.115 -i  /Users/dbclose/eshotlink/aws-keypair/emoldino-terminal-app.pem
 
 ## emoldino 인스턴스 추가하기
 ### 이미지로 시작하기 
@@ -208,10 +208,11 @@ https://console.aws.amazon.com/billing/home?#/
 
 ### Amazon RDS 데이터베이스 생성 
 - https://ndb796.tistory.com/226 참조하여 프리티어로 생성 
+- 스토리지 자동 조정 활성화 : 체크해제
 - DB인스턴스 식별자 : mms-abb
 - Master username : mms
 - 마스터 암호 : emoldino^&^%
-- 스토리지 자동 조정 활성화 : 체크해제
+
 
 #### 추가 연결 구성 
 - 서브넷 그룹 : emoldino mysql subnet group 선택 
@@ -244,3 +245,20 @@ $ vi /home/emoldino/mms/mms/config/application.properties
 서비스 시작 및 브라우저에서 접속확인 
 
 
+
+
+
+
+
+## 2019-12-19 
+### RDS 말레이시아 타임존 
+- RDS 파라미터 그룹 항목 중 'time_zone' 검색 
+- 말레이시아 타임존이 없어 Asia/Singapore로 설정함. 
+
+### EC2 타임존 설정 
+
+Africa/Cairo, Africa/Casablanca, Africa/Harare, Africa/Monrovia, Africa/Nairobi, Africa/Tripoli, Africa/Windhoek, America/Araguaina, America/Asuncion, America/Bogota, America/Buenos_Aires, America/Caracas, America/Chihuahua, America/Cuiaba, America/Denver, America/Fortaleza, America/Guatemala, America/Halifax, America/Manaus, America/Matamoros, America/Monterrey, America/Montevideo, America/Phoenix, America/Santiago, America/Tijuana, Asia/Amman, Asia/Ashgabat, Asia/Baghdad, Asia/Baku, Asia/Bangkok, Asia/Beirut, Asia/Calcutta, Asia/Damascus, Asia/Dhaka, Asia/Irkutsk, Asia/Jerusalem, Asia/Kabul, Asia/Karachi, Asia/Kathmandu, Asia/Krasnoyarsk, Asia/Magadan, Asia/Muscat, Asia/Novosibirsk, Asia/Riyadh, Asia/Seoul, Asia/Shanghai, Asia/Singapore, Asia/Taipei, Asia/Tehran, Asia/Tokyo, Asia/Ulaanbaatar, Asia/Vladivostok, Asia/Yakutsk, Asia/Yerevan, Atlantic/Azores, Australia/Adelaide, Australia/Brisbane, Australia/Darwin, Australia/Hobart, Australia/Perth, Australia/Sydney, Canada/Newfoundland, Canada/Saskatchewan, Brazil/East, Europe/Amsterdam, Europe/Athens, Europe/Dublin, Europe/Helsinki, Europe/Istanbul, Europe/Kaliningrad, Europe/Moscow, Europe/Paris, Europe/Prague, Europe/Sarajevo, Pacific/Auckland, Pacific/Fiji, Pacific/Guam, Pacific/Honolulu, Pacific/Samoa, US/Alaska, US/Central, US/Eastern, US/East-Indiana, US/Pacific, UTC
+
+
+
+ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime

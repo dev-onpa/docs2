@@ -15,3 +15,15 @@
 4. 사용자 인증 정보 등록
 
 5. 구글맵 API 키 확인 후 연동작업..
+- Api > Credentials 메뉴에서 API KEY 확인 가능.
+
+
+## 언어 및 지역 설정
+> https://developers.google.com/maps/documentation/javascript/localization
+- language: ja
+- region: JP
+
+```html
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&language=ja&region=JP">
+</script>
+```

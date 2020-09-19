@@ -51,3 +51,25 @@
     ````
 
 
+## ssh-keygen
+```
+ssh-keygen -t rsa -C dyson-us -f dyson-us.pem
+```
+
+## ppk to pem (pem to ppk)
+```
+puttygen from.ppk -O private-openssh -o to.pem
+```
+
+```
+puttygen from.pem -O private-openssh -o to.ppk
+```
+
+```
+puttygen dyson-us.pem -O private-openssh -o dyson-us.ppk
+```
+
+## puttygen 설치 (mac)
+```
+brew install putty
+```
