@@ -351,6 +351,7 @@ Use Helm to deploy an NGINX ingress controller
 helm install nginx-ingress stable/nginx-ingress \
     --namespace ingress-basic \
     --set controller.replicaCount=2 \
+    --set controller.service.externalTrafficPolicy=Local \
     --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
     --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux \
     --set controller.service.loadBalancerIP="40.82.154.152"
@@ -392,6 +393,7 @@ Nginx Ingress controller 설치 (name space는 default)
 ```
 helm install nginx-ingress stable/nginx-ingress \
     --set controller.replicaCount=2 \
+    --set controller.service.externalTrafficPolicy=Local \
     --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
     --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
 ```
@@ -512,3 +514,7 @@ spec:
   ports:
   - port: 80
 ```
+
+
+
+az aks get-credentials --resource-group OpUmsResourceGroup --name OpUmsKube

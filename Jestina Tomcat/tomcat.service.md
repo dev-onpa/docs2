@@ -82,8 +82,8 @@ chcon -R -t httpd_sys_content_t /home/jestina
 $ sestatus
 
 - 포트 확인
-$ semanage port -l|grep http_port_t
+$ semanage port -l | grep http_port_t
 
 - 포트 추가 
-$ semanage port -a -t http_port_t -p tcp 8049
+$ semanage port -a -t http_port_t -p tcp 8000
 ```

@@ -120,3 +120,69 @@ $ yum install -y java-1.8.0-openjdk-devel.x86_64
 인스턴스 생성 후 상세에서 
 - apply public access
 - configure Whitelist
+
+
+### ECS 접속
+```
+ssh root@121.41.86.83
+
+$ yum -y update
+$ yum install -y java-1.8.0-openjdk-devel.x86_64
+
+```
+
+### RDS 인스턴스 생성
+- Billing Method: Subscription
+- Region: 항저우
+- Database: Mysql 5.7
+- Edition: Basic
+- Storage Type: Standard SSD
+- Zone: Hangzhou Zone H
+- Instant Type: mysql.n1.micro.1 (1CPU, 1GB)
+- 1Month : $6.50
+
+인스턴스 생성 후 상세에서
+- apply public access
+- configure Whitelist
+
+### Database 생성
+좌측 Databases 메뉴에서 DB생성.
+
+- Database Name: mms
+- Supported Character Sets: utf8mb4
+- Authorized Account: 미설정
+
+
+### DB 계정 생성
+좌측 Accounts 메뉴에서 계정 생성.
+- Database Account: mms
+- Authorized Databases: mms -> 선택 후 Read/Write 권한
+- Account Type: Starndard Account
+- Password: emoldino^&^%
+
+
+
+## 2020-08-27
+처음 프리티어로 사용하던 RDS 기간 만료 (8/24) - 1달 연장(renew) => 24달러
+새로 생성하고 사용량기준으로 하면 시간당 0.01달러 (1달 기준 7.2달)러
+새로 생성하기로 함.
+
+
+### RDS 인스턴스 생성
+1. Basic Configuration
+- Billing Method: Pay-As-You-Go
+- Region: 항저우
+- Database: Mysql 5.7
+- Edition: Basic
+- Storage Type: Standard SSD
+- Zone: Hangzhou Zone H
+- Instant Type: mysql.n1.micro.1 (1CPU, 1GB)
+- Capacity: 20GB
+- Fee : $0.01/Hour
+
+2. Instance Configuration
+- 기본값
+
+인스턴스 생성 후 상세에서
+- apply public access
+- configure Whitelist

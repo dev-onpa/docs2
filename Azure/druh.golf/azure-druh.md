@@ -35,6 +35,8 @@ druh-saleson/upload/
 - 레지스트리 이름:  DruhRegistry
 - 한국 중부 / 표준 
 
+az aks get-credentials --resource-group DruhResourceGroup --name DruhKube
+
 
 ### AKS 클러스터에 대한 ACR 통합 구성
 ```
@@ -71,6 +73,7 @@ kubectl create secret generic druhfile-secret --from-literal=azurestorageaccount
 ```
 
 ### StorageClass, PV, PVC 생성 
+kubernetes persistentVolume을 생성하고 스토리지 계정과 연결.
 ```
 kubectl apply -f saleson-kubernetes/azure-saleson-pv.yaml
 ```
@@ -113,21 +116,35 @@ az network public-ip create \
 helm이 이미 설치되어 있어야 함.
 namespace는 지정하지 않았음.
 
-Add the official stable repository
+1. Add the official stable repository
 ```
-helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 ```
 
-nginx-ingress 설치
+2. nginx-ingress 설치
+   접속한 Client ip를 확인하기 위해서 `--set controller.service.externalTrafficPolicy=Local` 설정을 추가한다.
+   `X-Forward-For`를 통해 IP를 확인할 수 있다.
 
 
 ```
 helm install nginx-ingress stable/nginx-ingress \
     --set controller.replicaCount=2 \
+    --set controller.service.externalTrafficPolicy=Local \
     --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
     --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux \
     --set controller.service.loadBalancerIP="20.39.186.94"
 ```
+
+3. helm 설치 목록
+```shell
+$ helm list --namespace default
+```
+
+4. nginx-ingress 삭제
+```shell
+helm uninstall nginx-ingress --namespace default
+```
+
 
 ### ingress resource 등록
 
@@ -145,6 +162,15 @@ kubectl create secret tls saleson-api-ssl-secret \
     --key certs/20200619-022314-api_druh_golf/api_druh_golf_SHA256WITHRSA.key \
     --cert certs/20200619-022314-api_druh_golf/api_druh_golf.crt
 ```
+
+2021.04.13 채인인증서를 포함하여 적용 
+```
+kubectl create secret tls saleson-api-ssl-secret-fc \
+    --namespace default \
+    --key certs/20200619-022314-api_druh_golf/api_druh_golf_SHA256WITHRSA.key \
+    --cert certs/20200619-022314-api_druh_golf/api_druh_golf_fullchain.crt
+```
+
 
 saleson-web-ssl-secret 만들기
 ```
@@ -206,7 +232,7 @@ kubectl exec -it pod/sdfasdfasdf /bin/bash로 접속하여 curl로 IP 확인
 alpine linux container 접속 
 /bin/asc
 ```
-kubectl exec -it pod/saleson-api-deployment-75988d4d7d-27fcg /bin/ash
+kubectl exec -it pod/saleson-api-deployment-75988d4d7d-27fcg /bin/asc
 ```
 
 
@@ -571,6 +597,121 @@ pipeline {
 }
 ```
 
+
+
+
+
+### 드루 jenkins azure 배포 오류 
+#### DRUH (2021.06.10)
+- Service Principle 만료가 원인 
+
+```shell
+
+az login 
+
+az aks get-credentials --resource-group DruhResourceGroup --name DruhKube
+
+az aks show --resource-group DruhResourceGroup --name DruhKube --query "servicePrincipalProfile.clientId" --output tsv
+8122de5f-07fe-4c9b-be52-4308403b1fd8
+
+az ad sp credential list --id 8122de5f-07fe-4c9b-be52-4308403b1fd8
+[]
+
+az vmss run-command invoke --command-id RunShellScript \
+--resource-group MC_DruhResourceGroup_DruhKube_koreacentral \
+--name aks-agentpool-41368111-vmss \
+--instance-id 0 \
+--scripts "hostname && date && cat /etc/kubernetes/azure.json" | grep aadClientSecret
+...
+\"aadClientId\": \"8122de5f-07fe-4c9b-be52-4308403b1fd8\",
+\"aadClientSecret\": \"e0b15699-ba32-4515-b1ec-6806acb2dfd4\"
+...
+
+az ad sp credential reset -n 8122de5f-07fe-4c9b-be52-4308403b1fd8 -p e0b15699-ba32-4515-b1ec-6806acb2dfd4 --years 10
+{
+  "appId": "8122de5f-07fe-4c9b-be52-4308403b1fd8",
+  "name": "8122de5f-07fe-4c9b-be52-4308403b1fd8",
+  "password": "e0b15699-ba32-4515-b1ec-6806acb2dfd4",
+  "tenant": "6d6e5e0b-0033-43d2-bc45-b590f106e2f6"
+}
+
+az ad sp credential list --id 8122de5f-07fe-4c9b-be52-4308403b1fd8
+
+[
+  {
+    "additionalProperties": null,
+    "customKeyIdentifier": null,
+    "endDate": "2031-06-10T08:59:20.032617+00:00",
+    "keyId": "0f801aaa-98e6-47d1-beb1-0a4ea8759d4b",
+    "startDate": "2021-06-10T08:59:20.032617+00:00",
+    "value": null
+  }
+]
+
+```
+
+
+### Jenkins 설정 
+#### 1. ACR의 Jenkins 자격 증명 만들기
+서비스 주체 생성
+```
+az ad sp create-for-rbac --skip-assignment
+
+{
+  "appId": "4dd7a2e0-432a-4a91-a840-116076b861a9",
+  "displayName": "azure-cli-2021-06-17-04-39-47",
+  "name": "http://azure-cli-2021-06-17-04-39-47",
+  "password": "NuAwKK2HB0uph5qcTYsJ~fA60P~.0_gnXY",
+  "tenant": "6d6e5e0b-0033-43d2-bc45-b590f106e2f6"
+}
+```
+Az ACR show 명령을 사용 하 여 ACR 레지스트리의 리소스 ID를 가져오고 변수로 저장 합니다. 리소스 그룹 이름과 ACR 이름을 입력합니다.
+이제 역할 할당을 만들어 ACR 레지스트리에 대한 서비스 주체 Contributor 권한을 할당합니다.
+
+```
+ACR_ID=$(az acr show --resource-group DruhResourceGroup --name DruhRegistry --query "id" --output tsv)
+az role assignment create --assignee 4dd7a2e0-432a-4a91-a840-116076b861a9 --role Contributor --scope $ACR_ID
+```
+
+#### 2. Jenkins에서 ACR 서비스 주체의 자격 증명 리소스 만들기
+Credentials > System > Global credentials (unrestricted) 메뉴에서 `druhregistry-credentials` username, password를 업데이트함. 
+
+- Kind: Username and Password
+- Scope: Global (jenkins, nodes, items, all child items, etc)
+- username: 4dd7a2e0-432a-4a91-a840-116076b861a9 (ACR 레지스트리에 인증하기 위해 만든 서비스 주체의 appId입니다.)
+- password: NuAwKK2HB0uph5qcTYsJ~fA60P~.0_gnXY (ACR 레지스트리에 인증하기 위해 만든 서비스 주체의 password입니다.)
+- ID - druhregistry-credentials  (자격 증명 식별자)
+- Description: ACR-DruhRegistry
+
+
+#### 3. DRUH 토큰 재생성 (2021.06.10)
+> https://github.com/jenkinsci/kubernetes-cli-plugin
+순서대로 실행하여 토큰 복사함
+```
+$ kubectl -n default create serviceaccount jenkins-robot2
+
+$ kubectl -n default create rolebinding jenkins-robot2-binding --clusterrole=cluster-admin --serviceaccount=default:jenkins-robot2
+
+$ kubectl -n default get serviceaccount jenkins-robot2 -o go-template --template='{{range .secrets}}{{.name}}{{"\n"}}{{end}}'
+
+jenkins-robot2-token-xxpxn
+
+
+$ kubectl -n default get secrets jenkins-robot2-token-xxpxn -o go-template --template '{{index .data "token"}}' | base64 -d
+
+eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImplbmtpbnMtcm9ib3QyLXRva2VuLXh4cHhuIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImplbmtpbnMtcm9ib3QyIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiNjA2NjVmZWItODlmOC00ZTdmLWFkZmItNzBlZDdkOGFmMzBkIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OmRlZmF1bHQ6amVua2lucy1yb2JvdDIifQ.Mr8HoZRKfug39q_1bEMswyb5u-KRBD016JmDHZwrtwBKaO1DilGYcabdtad8Y-V75m0lEzXrP7RQmBfSfpxTJniNZFDqCb6S79qEBPVC3Np6tNx4TQWIehx8ZVwYSC1kTjm85G-_ZD6oPqxCrtBy2rRm4tRLj23FNRblNgNKKZbFNFiGZU0JizQw8r1y13Xi-bPpyo1qmosEtSPEPM6ymtgnF2y4O1XkTKv-bCTTnY8PrQ7qrfayzSqcB2MaoBiNXRxhkZUCH8ycU4D4aJ-l95zzjR3LTLpVR5obT__g384kDBqYFFkMfabEJwxyrTQxLNQk00CEB6bwujc9X1O_7LCtmbHkOji6Yk5Fxp-kaBBoDv97cYOQOBDQc8QnPVmZrE6W5xIKKyrQXL287D-8FxSKgmCHFUWZSDlQz1DS3UMYVIMCKIMjxkWhDip8hNbVyxpmaST1nE50nR_T8SHOE30RAooIehOua1j7ArzkEh3e6riALO7WiCQ3H2K-jPwubwgfLp9Xdv0s6jGxC-oLZULrsTc-v0IrstbtXcUitpHeQSCo7xaC1Xv9Y35cD92FTpjvaMpgcxjoh0wYj_q-ly__BUeo3noD6CfqAK-7TCB44VIdxa-JlvunP37woWArJhhJpWXsxTE8kbV5u3IkNXxjN4tASdoN_SKJHsgdnWs
+```
+> 토큰의 마지막이 %로 끝나는 경우 %는 토큰이 아님.
+
+
+#### 4. Jenkins에서 Credential 생성
+Credentials > System > Global credentials (unrestricted) 메뉴에서 `Add Credentils` 클릭
+
+- Kind: Secret text
+- Scope: Global (jenkins, nodes, items, all child items, etc)
+- secret: eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImplbmtpbnMtcm9ib3QyLXRva2VuLXh4cHhuIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImplbmtpbnMtcm9ib3QyIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiNjA2NjVmZWItODlmOC00ZTdmLWFkZmItNzBlZDdkOGFmMzBkIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OmRlZmF1bHQ6amVua2lucy1yb2JvdDIifQ.Mr8HoZRKfug39q_1bEMswyb5u-KRBD016JmDHZwrtwBKaO1DilGYcabdtad8Y-V75m0lEzXrP7RQmBfSfpxTJniNZFDqCb6S79qEBPVC3Np6tNx4TQWIehx8ZVwYSC1kTjm85G-_ZD6oPqxCrtBy2rRm4tRLj23FNRblNgNKKZbFNFiGZU0JizQw8r1y13Xi-bPpyo1qmosEtSPEPM6ymtgnF2y4O1XkTKv-bCTTnY8PrQ7qrfayzSqcB2MaoBiNXRxhkZUCH8ycU4D4aJ-l95zzjR3LTLpVR5obT__g384kDBqYFFkMfabEJwxyrTQxLNQk00CEB6bwujc9X1O_7LCtmbHkOji6Yk5Fxp-kaBBoDv97cYOQOBDQc8QnPVmZrE6W5xIKKyrQXL287D-8FxSKgmCHFUWZSDlQz1DS3UMYVIMCKIMjxkWhDip8hNbVyxpmaST1nE50nR_T8SHOE30RAooIehOua1j7ArzkEh3e6riALO7WiCQ3H2K-jPwubwgfLp9Xdv0s6jGxC-oLZULrsTc-v0IrstbtXcUitpHeQSCo7xaC1Xv9Y35cD92FTpjvaMpgcxjoh0wYj_q-ly__BUeo3noD6CfqAK-7TCB44VIdxa-JlvunP37woWArJhhJpWXsxTE8kbV5u3IkNXxjN4tASdoN_SKJHsgdnWs
+- ID: druh-kube-secret-20210610
+- Description: DruhKube 클러스터의 secret key
 
 
 

@@ -74,3 +74,22 @@ Docker는 개발자나 시스템 관리자가 컨테이너(`Container`)를 사�
 https://rampart81.github.io/post/dockerfile_instructions/
 
     
+## 이슈 (docker 용량)
+### /var/lib/docker/overlay2/ 용량이 너무 큼
+> https://docs.docker.com/engine/reference/commandline/system_prune/#description
+> https://www.popit.kr/%ED%95%B4%EA%B2%B0%EB%B0%A9%EC%95%88-docker%EB%A5%BC-%EC%9A%B4%EC%98%81%ED%95%98%EB%8B%A4-%EC%9A%A9%EB%9F%89%EC%9D%B4-%EA%BD%89%EC%B0%BC%EC%9D%84%EB%95%8C/
+
+- 안쓰는 이미지와 컨테이너 삭제하기
+```shell
+$ docker system prune -a -f
+```
+
+
+### gitlab backup(백업)
+```shell
+- gitlab 백업(backup) 파일 용량 확인 (log)
+- /var/opt/gitlab/backups
+```
+
+
+

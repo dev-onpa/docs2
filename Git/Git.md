@@ -51,7 +51,7 @@ git merge -X theirs 브랜치명 (상대것으로 auto merge)
 - Merge 했는데 충돌이 많아 취소하고 싶다.
 
 ```
-$ git merge --abrort
+$ git merge --abort
 ```
 
 

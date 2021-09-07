@@ -262,3 +262,6 @@ Africa/Cairo, Africa/Casablanca, Africa/Harare, Africa/Monrovia, Africa/Nairobi,
 
 
 ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+
+
+ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime

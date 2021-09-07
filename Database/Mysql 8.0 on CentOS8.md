@@ -131,6 +131,6 @@ password: 변경한 비밀번호
 ## 데이터베이스 / 계정 생성
 ```sql
 CREATE DATABASE SALESON3;
-CREATE USER 'saleson3'@'192.168.123.%' IDENTIFIED BY 'pw92%@';
+CREATE USER 'saleson3'@'192.168.123.%' IDENTIFIED WITH mysql_native_password BY 'pw92%@';
 GRANT ALL PRIVILEGES ON SALESON3.* TO 'saleson3'@'192.168.123.%' WITH GRANT OPTION;
 ```
